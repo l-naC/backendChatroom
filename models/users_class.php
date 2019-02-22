@@ -176,9 +176,9 @@ Class User
         $dbh = Connection::get();
         $sql = "DELETE FROM `users` WHERE `login`= :login";
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $sth->execute(array(
-            ':login' => $data['login']
-        ));
-        die;
+        if ($sth->execute(array(':login' => $data['login']))){
+            return true;
+        }
+        return false;
     }
 }

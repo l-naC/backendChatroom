@@ -49,11 +49,9 @@ try {
             break;
         case 'deleted':
             if ($user->delete($_GET)){
-                $_SESSION['errors'] = [];
-                header('Location: ../views/formUsers.php');
+                header('Location: ../views/connection.php');
                 die;
             }
-            $_SESSION['errors'] = $user->errors;
             header('Location: ../views/users_list.php');
             break;
         case 'modified':
