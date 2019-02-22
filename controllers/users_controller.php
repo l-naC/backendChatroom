@@ -12,11 +12,11 @@ try {
     $user = new User();
     switch ($action){
         case 'login':
-            $_SESSION['login'] = $_POST['login'];
             if ($user->login($_POST)){
                 $_SESSION['errors'] = [];
+                $_SESSION['login'] = $_POST['login'];
                 $users = $user->findOnly($_SESSION['login']);
-                header('Location: ../views/users_list.php');
+                header('Location: ../controllers/users_controller.php?action=list');
                 die;
             }
             // put errors in $session
@@ -41,26 +41,27 @@ try {
         case 'register':
             if ($user->save($_POST)){
                 $_SESSION['errors'] = [];
-                header('Location: ../views/users_list.php');
+                header('Location: ../controllers/users_controller.php?action=list');
                 die;
             }
             $_SESSION['errors'] = $user->errors;
             header('Location: ../views/formUsers.php');
             break;
         case 'deleted':
-            if ($user->delete($_GET)){
+            if ($user->deleted($_GET)){
                 header('Location: ../views/connection.php');
                 die;
             }
             header('Location: ../views/users_list.php');
             break;
         case 'modified':
-            if ($user->modified($_GET)){
-                header('Location: ../views/users_list.php');
+            if ($user->modified($_POST)){
+                $_SESSION['errors'] = [];
+                header('Location: ../controllers/users_controller.php?action=list');
                 die;
             }
             $_SESSION['errors'] = $user->errors;
-            header('Location: ../views/formUsers.php');
+            header('Location: ../views/modifiedUsers.php');
             break;
         default:
             header('Location: ../views/connection.php');

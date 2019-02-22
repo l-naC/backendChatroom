@@ -172,12 +172,72 @@ Class User
         return false;
     }
 
-    public function delete($data){
+    public function deleted($data){
         $dbh = Connection::get();
         $sql = "DELETE FROM `users` WHERE `login`= :login";
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         if ($sth->execute(array(':login' => $data['login']))){
             return true;
+        }
+        return false;
+    }
+
+    public function validateModif($data)
+    {
+        $this->errors = [];
+
+        /* required fields */
+        if (!isset($data['login'])) {
+            $this->errors[] = 'champ login vide';
+        }
+        /* tests de formats */
+        if (isset($data['login'])) {
+            if (empty($data['login'])) {
+                $this->errors[] = 'champ login vide';
+                // si name > 50 chars
+            } else if (mb_strlen($data['login']) > 45) {
+                $this->errors[] = 'champ login trop long (45max)';
+            }
+        }
+
+        if (isset($data['handle'])) {
+            if (empty($data['handle'])) {
+                $this->errors[] = 'champ pseudo vide';
+                // si name > 50 chars
+            } else if (mb_strlen($data['handle']) > 45) {
+                $this->errors[] = 'champ handle trop long (45max)';
+            }
+        }
+
+        if (count($this->errors) > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public function modified($data)
+    {
+        if ($this->validateModif($data)) {
+            if(isset($data['id']) && !empty($data['id'])){
+                // update
+            }elseif ($this->loginExists($data['login'])){
+                return false;
+            }
+            /* syntaxe avec preparedStatements */
+            $dbh = Connection::get();
+            $sql = "UPDATE users SET login = :login,  handle = :handle WHERE login = '".$_SESSION['login']."'";
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            if ($sth->execute(array(
+                ':login' => $data['login'],
+                ':handle' => $data['handle'],
+            ))) {
+                $_SESSION['login'] = $data['login'];
+                return true;
+            } else {
+                // ERROR
+                // put errors in $session
+                 $this->errors['pas reussis a modifier le user'];
+            }
         }
         return false;
     }

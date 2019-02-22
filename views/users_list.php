@@ -4,7 +4,6 @@ $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
 if (isset($_SESSION['login'])){
     $users = isset($_SESSION['users']) ? $_SESSION['users'] : [];
 }
-var_dump($users);
 ?>
 
 <html>
@@ -56,7 +55,7 @@ var_dump($users);
                     </td>
 
                     <td>
-                        <a href="../controllers/users_controller.php?action=modified&login=<?php echo $user->login; ?>"">
+                        <a href="../views/modifiedUsers.php?&login=<?php echo $user->login; ?>"">
                             <button id="userModified" name="modified">Modified</button>
                         </a>
                     </td>

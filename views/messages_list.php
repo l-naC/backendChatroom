@@ -30,13 +30,14 @@ if (isset($_SESSION['login'])){
 <div class="container">
 
     <div class="row">
-        <h2>Messages</h2>
+        <h2>Messages de <?php echo $_SESSION['login']; ?> </h2>
         <table class="u-full-width">
             <thead>
             <tr>
+                <th>id</th>
                 <th>content</th>
-                <th>created</th>
-                <th>user_id</th>
+                <th>id_user</th>
+                <th>id_chatroom</th>
             </tr>
             </thead>
             <tbody>
@@ -44,10 +45,15 @@ if (isset($_SESSION['login'])){
             foreach ($messages as $message) {
                 ?>
                 <tr>
+                    <td><?= $message->id ?></td>
                     <td><?= $message->content ?></td>
-                    <td><?= $message->created ?></td>
                     <td><?= $message->id_user ?></td>
                     <td><?= $message->id_chatroom ?></td>
+                    <td>
+                        <a href="../controllers/messages_controller.php?action=deleted&id=<?php echo $message->id; ?>">
+                            <button id="userDeleted" name="deleted">Deleted</button>
+                        </a>
+                    </td>
                 </tr>
                 <?php
             }
