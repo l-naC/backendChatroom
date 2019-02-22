@@ -30,18 +30,14 @@ if (isset($_SESSION['login'])){
 <div class="container">
 
     <div class="row">
-        <h2>Chatrooms de <?php echo $_SESSION['login']; ?> </h2>
-        <a href="../views/formChatrooms.php">
-            <button id="chatroomregister" name="register">Register chatroom</button>
-        </a>
+        <h2>Messages de <?php echo $_SESSION['login']; ?> </h2>
         <table class="u-full-width">
             <thead>
             <tr>
                 <th>id</th>
-                <th>title</th>
+                <th>content</th>
                 <th>id_user</th>
-                <th>Modified</th>
-                <th>Messages</th>
+                <th>id_chatroom</th>
             </tr>
             </thead>
             <tbody>
@@ -50,16 +46,12 @@ if (isset($_SESSION['login'])){
                 ?>
                 <tr>
                     <td><?= $chatroom->id ?></td>
-                    <td><?= $chatroom->title ?></td>
+                    <td><?= $chatroom->content ?></td>
                     <td><?= $chatroom->id_user ?></td>
+                    <td><?= $chatroom->id_chatroom ?></td>
                     <td>
-                        <a href="../views/modifiedChatrooms.php?title=<?php echo $chatroom->title; ?>"">
-                        <button id="chatroomModified" name="modified">Modified</button>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="../controllers/chatrooms_controller.php?action=messages&title=<?php echo $chatroom->title; ?>"">
-                        <button id="chatroomMessages" name="messages">Messages</button>
+                        <a href="../controllers/messages_controller.php?action=deleted&id=<?php echo $chatroom->id; ?>">
+                            <button id="userDeleted" name="deleted">Deleted</button>
                         </a>
                     </td>
                 </tr>

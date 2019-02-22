@@ -45,7 +45,7 @@ class Chatroom
         return $users;
     }
 
-    public function validateModif($data)
+    public function validate($data)
     {
         $this->errors = [];
 
@@ -63,10 +63,6 @@ class Chatroom
             }
         }
 
-        if (!isset($data['id_user'])) {
-            $this->errors[] = 'champ id_user vide';
-        }
-
         if (count($this->errors) > 0) {
             return false;
         }
@@ -75,15 +71,15 @@ class Chatroom
 
     public function modified($data)
     {
-        if ($this->validateModif($data)) {
+        if ($this->validate($data)) {
 
             /* syntaxe avec preparedStatements */
             $dbh = Connection::get();
-            $sql = "UPDATE chatrooms SET title = :title,  id_user = :id_user WHERE title = '".$_SESSION['title']."'";
+            $sql = "UPDATE chatrooms SET title = :title, modified = :modified WHERE title = '".$_SESSION['title']."'";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             if ($sth->execute(array(
                 ':title' => $data['title'],
-                ':id_user' => $data['id_user'],
+                ':modified' => date("Y-m-d H:i:s")
             ))) {
                 $_SESSION['title'] = $data['title'];
                 return true;
@@ -94,6 +90,41 @@ class Chatroom
             }
         }
         return false;
+    }
+
+    public function save($data)
+    {
+        if ($this->validate($data)) {
+            /* syntaxe avec preparedStatements */
+            $dbh = Connection::get();
+            $stmt = $dbh->query("SELECT * FROM users WHERE login = '".$_SESSION['login']."'");
+            // recupere les users et fout le resultat dans une variable sous forme de tableau de tableaux
+            $users = $stmt->fetch();
+            $sql = "insert into chatrooms(title, id_user) values (:title, :id_user)";
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            if ($sth->execute(array(
+                ':title' => $data['title'],
+                ':id_user' => $users['id']
+            ))) {
+                return true;
+            } else {
+                // ERROR
+                // put errors in $session
+                $this->errors['pas reussi a creer la chatroom'];
+            }
+        }
+        return false;
+    }
+
+    public function findAllMessages($data)
+    {
+        $dbh = Connection::get();
+        $sql_user="(SELECT id FROM users WHERE login = '".$_SESSION['login']."')";
+        $sql_chatroom="(SELECT id FROM chatrooms WHERE title = '".$data."')";
+        $stmt = $dbh->query("select * from messages where id_user = $sql_user AND id_chatroom = $sql_chatroom");
+        // recupere les users et fout le resultat dans une variable sous forme de tableau de tableaux
+        $messages = $stmt->fetchAll(PDO::FETCH_CLASS);
+        return $messages;
     }
 
 }

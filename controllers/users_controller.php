@@ -37,7 +37,6 @@ try {
             header('Content-type: application/json; charset=UTF-8');
             echo json_encode($users, true);
             break;
-
         case 'register':
             if ($user->save($_POST)){
                 $_SESSION['errors'] = [];

@@ -1,17 +1,8 @@
 <?php
-require_once('../classes/connection_class.php');
 session_start();
 $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
 if (!isset($_SESSION['login'])){
 }
-$_SESSION['title'] = $_GET['title'];
-$dbh = Connection::get();
-$stmt = $dbh->prepare("select * from chatrooms where title = :title limit 1");
-$stmt->execute(array(
-    ':title' => $_SESSION['title']
-));
-$chatrooms = $stmt->fetchAll(PDO::FETCH_CLASS);
-
 ?>
 
 <html>
@@ -35,7 +26,7 @@ $chatrooms = $stmt->fetchAll(PDO::FETCH_CLASS);
 <?php require_once('../components/nav.php') ?>
 <div class="container">
     <div class="row">
-        <h1>formulaire modifier chatroom</h1>
+        <h1>formulaire ajout chatroom</h1>
         <ul class="errors">
             <?php
             foreach( $errors as $error) {
@@ -43,18 +34,14 @@ $chatrooms = $stmt->fetchAll(PDO::FETCH_CLASS);
             }
             ?>
         </ul>
-        <?php
-        foreach( $chatrooms as $chatroom) {
-        ?>
-        <form method="post" action="../controllers/chatrooms_controller.php?action=modified&title=<?php echo $chatroom->title; ?>"" id="usersForm">
+        <form method="post" action="../controllers/chatrooms_controller.php?action=register" id="usersForm">
             <fieldset>
                 <legend>chatroom</legend>
                 <label for="chatroomTitle">Title</label>
-                <input type="text" id="chatroomTitle" name="title" value="<?php echo $chatroom->title; ?>"/>
+                <input type="text" id="chatroomTitle" name="title"/>
             </fieldset>
             <input type="submit" value="Envoyer" class="button-primary">
         </form>
-        <?php } ?>
     </div>
     <div class="row">
         <div class="column">

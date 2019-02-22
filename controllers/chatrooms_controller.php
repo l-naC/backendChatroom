@@ -16,6 +16,15 @@ try {
             $_SESSION['chatrooms'] = $chatrooms;
             header('Location: ../views/chatrooms_list.php');
             break;
+        case 'register':
+            if ($chatroom->save($_POST)){
+                $_SESSION['errors'] = [];
+                header('Location: ../controllers/chatrooms_controller.php?action=list');
+                die;
+            }
+            $_SESSION['errors'] = $chatroom->errors;
+            header('Location: ../views/formChatrooms.php');
+            break;
         case 'modified':
             $_SESSION['title'] = $_GET['title'];
             if ($chatroom->modified($_POST)){
@@ -25,6 +34,12 @@ try {
             }
             $_SESSION['errors'] = $chatroom->errors;
             header('Location: ../views/modifiedChatrooms.php');
+            break;
+        case 'messages':
+            $_SESSION['errors'] = [];
+            $chatrooms = $chatroom->findAllMessages($_GET['title']);
+            $_SESSION['chatrooms'] = $chatrooms;
+            header('Location: ../views/chatroom_messages_list.php');
             break;
         default;
             header('Location: ../views/chatrooms_list.php');

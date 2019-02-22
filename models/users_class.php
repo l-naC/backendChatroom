@@ -225,11 +225,12 @@ Class User
             }
             /* syntaxe avec preparedStatements */
             $dbh = Connection::get();
-            $sql = "UPDATE users SET login = :login,  handle = :handle WHERE login = '".$_SESSION['login']."'";
+            $sql = "UPDATE users SET login = :login,  handle = :handle, modified = :modified WHERE login = '".$_SESSION['login']."'";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             if ($sth->execute(array(
                 ':login' => $data['login'],
                 ':handle' => $data['handle'],
+                ':modified' => date("Y-m-d H:i:s")
             ))) {
                 $_SESSION['login'] = $data['login'];
                 return true;
