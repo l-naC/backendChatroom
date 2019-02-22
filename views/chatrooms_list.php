@@ -1,8 +1,9 @@
 <?php
 session_start();
 $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
+$chatrooms = isset($_SESSION['chatrooms']) ? $_SESSION['chatrooms'] : [];
 if (isset($_SESSION['login'])){
-    $users = isset($_SESSION['users']) ? $_SESSION['users'] : [];
+
 }
 ?>
 
@@ -29,33 +30,27 @@ if (isset($_SESSION['login'])){
 <div class="container">
 
     <div class="row">
-        <h2>Users</h2>
+        <h2>Chatrooms de <?php echo $_SESSION['login']; ?> </h2>
         <table class="u-full-width">
             <thead>
             <tr>
-                <th>Login</th>
-                <th>Password</th>
-                <th>Pseudo</th>
-                <th>Deleted</th>
+                <th>id</th>
+                <th>title</th>
+                <th>id_user</th>
                 <th>Modified</th>
             </tr>
             </thead>
             <tbody>
             <?php
-            foreach ($users as $user) {
+            foreach ($chatrooms as $chatroom) {
                 ?>
                 <tr>
-                    <td><?= $user->login ?></td>
-                    <td><?= $user->password ?></td>
-                    <td><?= $user->handle ?></td>
+                    <td><?= $chatroom->id ?></td>
+                    <td><?= $chatroom->title ?></td>
+                    <td><?= $chatroom->id_user ?></td>
                     <td>
-                        <a href="../controllers/users_controller.php?action=deleted&login=<?php echo $user->login; ?>">
-                            <button id="userDeleted" name="deleted">Deleted</button>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="../views/modifiedUsers.php?&login=<?php echo $user->login; ?>"">
-                            <button id="userModified" name="modified">Modified</button>
+                        <a href="../views/modifiedChatrooms.php?title=<?php echo $chatroom->title; ?>"">
+                        <button id="userModified" name="modified">Modified</button>
                         </a>
                     </td>
                 </tr>
@@ -66,10 +61,10 @@ if (isset($_SESSION['login'])){
         </table>
     </div>
 
-   <!-- <div class="row">
+    <div class="row">
         <div class="column">
             $_SESSION
-            <pre><?php /*print_r($_SESSION) */?></pre>
+            <pre><?php print_r($_SESSION) ?></pre>
         </div>
 
     </div>
@@ -77,13 +72,13 @@ if (isset($_SESSION['login'])){
     <div class="row">
         <div class="one-half column">
             $_GET
-            <pre><?php /*print_r($_GET) */?></pre>
+            <pre><?php print_r($_GET) ?></pre>
         </div>
         <div class="one-half column">
             $_POST :
-            <pre><?php /*print_r($_POST) */?></pre>
+            <pre><?php print_r($_POST) ?></pre>
         </div>
-    </div>-->
+    </div>
 
 </div>
 </body>

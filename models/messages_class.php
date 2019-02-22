@@ -51,7 +51,6 @@ class Message
         $dbh = Connection::get();
         $sql = "DELETE FROM `messages` WHERE `id`= :id";
         $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        print_r("DELETE FROM `messages` WHERE `id`= :id");
         if ($sth->execute(array(':id' => $data['id']))){
             return true;
         }

@@ -27,10 +27,6 @@ try {
             header('Location: ../views/messages_list.php');
             break;
         default;
-            //requete qui doit retourner des resultats
-            $stmt = $dbh->query("select * from messages");
-            $messages = $stmt->fetchAll(PDO::FETCH_CLASS);
-            $_SESSION['messages'] = $messages;
             header('Location: ../views/messages_list.php');
             break;
     }
