@@ -10,7 +10,7 @@ try {
 
     $message = new Message();
     switch ($action){
-        case 'deleted':
+        /*case 'deleted':
             echo $_GET['id'];
             $_SESSION['id'] = $_GET['id'];
             echo $_SESSION['id'];
@@ -19,12 +19,38 @@ try {
                 die;
             }
             header('Location: ../views/messages_list.php');
+            break;*/
+        case 'deleted':
+            header("Access-Control-Allow-Headers: *");
+            header('Access-Control-Allow-Origin: *');
+            header('Content-type: application/json; charset=UTF-8');
+
+            $message_info = json_decode(file_get_contents('php://input'));
+
+            $is_okay = $message->delete($message_info);
+            echo json_encode($is_okay);
             break;
-        case 'list':
+        /*case 'list':
             $_SESSION['errors'] = [];
             $messages = $message->findAll();
             $_SESSION['messages'] = $messages;
             header('Location: ../views/messages_list.php');
+            break;*/
+        case 'list':
+            header("Access-Control-Allow-Headers: *");
+            header('Access-Control-Allow-Origin: *');
+            header('Content-type: application/json; charset=UTF-8');
+            $message_info = json_decode(file_get_contents('php://input'));
+            $is_okay = $message->findAll($message_info);
+            echo json_encode($is_okay);
+            break;
+        case 'register':
+            header("Access-Control-Allow-Headers: *");
+            header('Access-Control-Allow-Origin: *');
+            header('Content-type: application/json; charset=UTF-8');
+            $message_info = json_decode(file_get_contents('php://input'));
+            $is_okay = $message->register($message_info);
+            echo json_encode($is_okay);
             break;
         default;
             header('Location: ../views/messages_list.php');

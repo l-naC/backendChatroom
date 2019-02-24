@@ -38,10 +38,11 @@ class Message
         }
     }
 
-    public function findAll()
+    public function findAll($data)
     {
         $dbh = Connection::get();
-        $stmt = $dbh->query("select * from messages where id_user = (SELECT id FROM users WHERE login = '".$_SESSION['login']."')");
+        //$stmt = $dbh->query("select * from messages where id_user = (SELECT id FROM users WHERE login = '".$_SESSION['login']."')");
+        $stmt = $dbh->query("select * from messages where id_user = '".$data->id_user."'");
         // recupere les users et fout le resultat dans une variable sous forme de tableau de tableaux
         $users = $stmt->fetchAll(PDO::FETCH_CLASS);
         return $users;
@@ -49,11 +50,33 @@ class Message
 
     public function delete($data){
         $dbh = Connection::get();
-        $sql = "DELETE FROM `messages` WHERE `id`= :id";
-        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        if ($sth->execute(array(':id' => $data['id']))){
-            return true;
+        if (isset($data->id)) {
+            $sql = "DELETE FROM `messages` WHERE `id`= :id";
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            if ($sth->execute(array(':id' => $data->id))){
+                return 'success';
+            }
         }
-        return false;
+    }
+
+    public function register($data)
+    {
+        $dbh = Connection::get();
+        if (isset($data->id_chatroom) && isset($data->content) && isset($data->id_user)) {
+
+            $sql = "insert into messages(content, id_user, id_chatroom) values (:content, :id_user, :id_chatroom)";
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            if ($sth->execute(array(
+                ':content' => $data->content,
+                ':id_user' => $data->id_user,
+                ':id_chatroom' => $data->id_chatroom
+            ))) {
+                return 'success';
+            } else {
+                // ERROR
+                // put errors in $session
+                return ['Impossible denvoyer le message'];
+            }
+        }
     }
 }

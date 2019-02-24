@@ -1,9 +1,10 @@
 <?php
 session_start();
 $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
+$users = isset($_SESSION['users']) ? $_SESSION['users'] : [];
 if (isset($_SESSION['login'])){
-    $users = isset($_SESSION['users']) ? $_SESSION['users'] : [];
 }
+
 ?>
 
 <html>

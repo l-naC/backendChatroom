@@ -44,42 +44,41 @@ Class User
         $this->errors = [];
 
         /* required fields */
-        if (!isset($data['login'])) {
+        if (!isset($data->login)) {
             $this->errors[] = 'champ login vide';
         }
-        if (!isset($data['password'])) {
+        if (!isset($data->password)) {
             $this->errors[] = 'champ password vide';
         }
         /* tests de formats */
-        if (isset($data['login'])) {
-            if (empty($data['login'])) {
+        if (isset($data->login)) {
+            if (empty($data->login)) {
                 $this->errors[] = 'champ login vide';
                 // si name > 50 chars
-            } else if (mb_strlen($data['login']) > 45) {
+            } else if (mb_strlen($data->login) > 45) {
                 $this->errors[] = 'champ login trop long (45max)';
             }
         }
 
-        if (isset($data['password'])) {
-            if (empty($data['password'])) {
+        if (isset($data->password)) {
+            if (empty($data->password)) {
                 $this->errors[] = 'champ password vide';
                 // si name > 50 chars
-            } else if (mb_strlen($data['password']) < 8) {
+            } else if (mb_strlen($data->password) < 8) {
                 $this->errors[] = 'champ password trop court (8 min)';
-            } else if (mb_strlen($data['password']) > 200) {
+            } else if (mb_strlen($data->password) > 200) {
                 $this->errors[] = 'champ password trop long (20 max)';
             }
         }
 
-        if (isset($data['handle'])) {
-            if (empty($data['handle'])) {
+        if (isset($data->handle)) {
+            if (empty($data->handle)) {
                 $this->errors[] = 'champ pseudo vide';
                 // si name > 50 chars
-            } else if (mb_strlen($data['handle']) > 45) {
+            } else if (mb_strlen($data->handle) > 45) {
                 $this->errors[] = 'champ handle trop long (45max)';
             }
         }
-
         if (count($this->errors) > 0) {
             return false;
         }
@@ -126,29 +125,26 @@ Class User
     public function save($data)
     {
         if ($this->validate($data)) {
-            if(isset($data['id']) && !empty($data['id'])){
-                // update
-            }elseif ($this->loginExists($data['login'])){
+            if ($this->loginExists($data->login)){
                 return false;
             }
-            $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+            $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
             /* syntaxe avec preparedStatements */
             $dbh = Connection::get();
             $sql = "insert into users (login, password, handle) values (:login, :password , :handle)";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             if ($sth->execute(array(
-                ':login' => $data['login'],
+                ':login' => $data->login,
                 ':password' => $hashedPassword,
-                ':handle' => $data['handle'],
+                ':handle' => $data->handle
             ))) {
-                return true;
+                return 'success';
             } else {
                 // ERROR
                 // put errors in $session
-                $this->errors['pas reussi a creer le user'];
+                return $this->errors['pas reussi a creer le user'];
             }
         }
-        return false;
     }
 
     public function login($data)
@@ -158,28 +154,46 @@ Class User
             $sql = "select password from users where login = :login limit 1";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $sth->execute(array(
-                ':login' => $data['login']
+                ':login' => $data->login
             ));
             $storedPassword = $sth->fetchColumn();
-            if (password_verify($data['password'], $storedPassword)) {
-                return true;
+            if (password_verify($data->password, $storedPassword)) {
+                $sql = "select id from users where login = :login limit 1";
+                $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                $sth->execute(array(
+                    ':login' => $data->login
+                ));
+                $id = $sth->fetchColumn();
+
+                $sql = "select handle from users where login = :login limit 1";
+                $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                $sth->execute(array(
+                    ':login' => $data->login
+                ));
+                $handle = $sth->fetchColumn();
+                $_SESSION['login'] = $data->login;
+                $connected[] = "Vous êtes connecté ".$data->login."";
+                $result = array( $id , 'success', $handle, $connected);
+                return $result;
 
             } else {
                 // ERROR
                 $this->errors[] = 'CASSE TOI !';
+                $result = array( $this->errors , 'fail');
+                return $result;
             }
         }
-        return false;
     }
 
     public function deleted($data){
         $dbh = Connection::get();
-        $sql = "DELETE FROM `users` WHERE `login`= :login";
-        $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        if ($sth->execute(array(':login' => $data['login']))){
-            return true;
+        if (isset($data->login)) {
+            $sql = "DELETE FROM `users` WHERE `login`= :login LIMIT 1";
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            if ($sth->execute(array(':login' => $data->login))){
+                return 'success';
+            }
         }
-        return false;
     }
 
     public function validateModif($data)
@@ -187,24 +201,24 @@ Class User
         $this->errors = [];
 
         /* required fields */
-        if (!isset($data['login'])) {
+        if (!isset($data->login)) {
             $this->errors[] = 'champ login vide';
         }
         /* tests de formats */
-        if (isset($data['login'])) {
-            if (empty($data['login'])) {
+        if (isset($data->login)) {
+            if (empty($data->login)) {
                 $this->errors[] = 'champ login vide';
                 // si name > 50 chars
-            } else if (mb_strlen($data['login']) > 45) {
+            } else if (mb_strlen($data->login) > 45) {
                 $this->errors[] = 'champ login trop long (45max)';
             }
         }
 
-        if (isset($data['handle'])) {
-            if (empty($data['handle'])) {
+        if (isset($data->handle)) {
+            if (empty($data->handle)) {
                 $this->errors[] = 'champ pseudo vide';
                 // si name > 50 chars
-            } else if (mb_strlen($data['handle']) > 45) {
+            } else if (mb_strlen($data->handle) > 45) {
                 $this->errors[] = 'champ handle trop long (45max)';
             }
         }
@@ -218,28 +232,31 @@ Class User
     public function modified($data)
     {
         if ($this->validateModif($data)) {
-            if(isset($data['id']) && !empty($data['id'])){
+            /*if(isset($data['id']) && !empty($data['id'])){
                 // update
             }elseif ($this->loginExists($data['login'])){
                 return false;
-            }
+            }*/
             /* syntaxe avec preparedStatements */
             $dbh = Connection::get();
-            $sql = "UPDATE users SET login = :login,  handle = :handle, modified = :modified WHERE login = '".$_SESSION['login']."'";
+            $sql = "UPDATE users SET login = :login,  handle = :handle, modified = :modified WHERE id = :id";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             if ($sth->execute(array(
-                ':login' => $data['login'],
-                ':handle' => $data['handle'],
-                ':modified' => date("Y-m-d H:i:s")
+                ':login' => $data->login,
+                ':handle' => $data->handle,
+                ':modified' => date("Y-m-d H:i:s"),
+                ':id' => $data->id
             ))) {
-                $_SESSION['login'] = $data['login'];
-                return true;
+                $_SESSION['login'] = $data->login;
+                $result = array( $data , 'success');
+                return $result;
             } else {
                 // ERROR
                 // put errors in $session
-                 $this->errors['pas reussis a modifier le user'];
+                $this->errors['pas reussis a modifier le user'];
+                $result = array( $this->errors , 'fail');
+                return $result;
             }
         }
-        return false;
     }
 }
