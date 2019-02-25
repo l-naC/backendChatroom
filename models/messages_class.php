@@ -64,18 +64,20 @@ class Message
         $dbh = Connection::get();
         if (isset($data->id_chatroom) && isset($data->content) && isset($data->id_user)) {
 
-            $sql = "insert into messages(content, id_user, id_chatroom) values (:content, :id_user, :id_chatroom)";
+            $sql = "insert into messages(content, id_user, id_chatroom, handle_user) values (:content, :id_user, :id_chatroom, :handle_user)";
             $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             if ($sth->execute(array(
                 ':content' => $data->content,
                 ':id_user' => $data->id_user,
-                ':id_chatroom' => $data->id_chatroom
+                ':id_chatroom' => $data->id_chatroom,
+                ':handle_user' => $data->handle_user
             ))) {
                 return 'success';
             } else {
                 // ERROR
                 // put errors in $session
-                return ['Impossible denvoyer le message'];
+                $this->errors[] = 'Impossible d\'envoyer le message';
+                return $this->errors;
             }
         }
     }

@@ -46,6 +46,16 @@ class Chatroom
         return $chatrooms;
     }
 
+    public function find($data)
+    {
+        $dbh = Connection::get();
+        //$stmt = $dbh->query("select * from chatrooms where id_user = (SELECT id FROM users WHERE login = '".$_SESSION['login']."')");
+        $stmt = $dbh->query("select * from chatrooms where id_user != '".$data->id_user."'");
+        // recupere les users et fout le resultat dans une variable sous forme de tableau de tableaux
+        $chatrooms = $stmt->fetchAll(PDO::FETCH_CLASS);
+        return $chatrooms;
+    }
+
     public function validate($data)
     {
         $this->errors = [];
@@ -94,12 +104,12 @@ class Chatroom
                 ':modified' => date("Y-m-d H:i:s")
             ))) {
                 $_SESSION['title'] = $data->title;
-                $result = 'success';
-                return $result;
+                return 'success';
             } else {
                 // ERROR
                 // put errors in $session
-                return $this->errors['pas reussis a modifier le user'];
+                $this->errors[] = 'pas reussi a modifier la chatroom';
+                return $this->errors;
             }
         }
     }
@@ -122,7 +132,8 @@ class Chatroom
             } else {
                 // ERROR
                 // put errors in $session
-                return $this->errors['pas reussi a creer la chatroom'];
+                $this->errors[] = 'pas reussi a creer la chatroom';
+                return $this->errors;
             }
         }
     }

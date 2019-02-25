@@ -142,8 +142,11 @@ Class User
             } else {
                 // ERROR
                 // put errors in $session
-                return $this->errors['pas reussi a creer le user'];
+                $this->errors[] = 'pas reussi a creer le user';
+                return $this->errors;
             }
+        }else{
+            return $this->errors;
         }
     }
 
