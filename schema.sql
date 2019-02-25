@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `project_chatroom` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `project_chatroom`;
 -- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
 --
 -- Host: localhost    Database: project_chatroom
@@ -31,7 +29,7 @@ CREATE TABLE `chatrooms` (
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +38,7 @@ CREATE TABLE `chatrooms` (
 
 LOCK TABLES `chatrooms` WRITE;
 /*!40000 ALTER TABLE `chatrooms` DISABLE KEYS */;
-INSERT INTO `chatrooms` VALUES (1,'Rien de special',2,'2019-02-22 19:10:55','2019-02-22 19:10:55'),(2,'bachelor',3,'2019-02-22 19:18:03','2019-02-22 19:18:03'),(3,'b3',2,'2019-02-22 19:18:22','2019-02-22 19:18:22'),(4,'heyo',3,'2019-02-22 21:12:33','2019-02-22 21:12:33');
+INSERT INTO `chatrooms` VALUES (2,'Bachelor 3',36,'2019-02-25 23:33:11','2019-02-25 23:35:46'),(3,'Mastere',35,'2019-02-25 23:44:41','2019-02-25 23:44:41');
 /*!40000 ALTER TABLE `chatrooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,8 +56,9 @@ CREATE TABLE `messages` (
   `id_chatroom` int(11) NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `handle_user` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +67,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (1,'dfhgjklm',2,2,'2019-02-22 16:08:39','2019-02-22 16:08:39'),(2,'ezezrefe',3,2,'2019-02-22 16:08:45','2019-02-22 16:08:45');
+INSERT INTO `messages` VALUES (1,'Salut !',36,2,'2019-02-25 23:35:24','2019-02-25 23:35:24','L-na'),(3,'Comment tu vas ?',36,2,'2019-02-25 23:36:38','2019-02-25 23:36:38','L-na'),(4,'Coucou ! Ca va bien et toi ?',35,2,'2019-02-25 23:50:01','2019-02-25 23:50:01','titi'),(5,'Tu racontes quoi de beau ?',35,2,'2019-02-25 23:50:15','2019-02-25 23:50:15','titi');
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +87,7 @@ CREATE TABLE `users` (
   `modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_UNIQUE` (`login`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +96,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'lenaclavier','$2y$10$UANolmDQlkgRKtIXM66BjOnNlhgI27JewXhqt9Qw8dtK/lfmTJSMW','L-na','2019-02-22 14:09:18','2019-02-22 14:09:18'),(3,'testc','$2y$10$YC2DoSwg4KmICy3KiLvbyOmGp/p..gICQWZWBYKNY6BG1.hjjyBKi','TTEST','2019-02-22 14:11:19','2019-02-22 22:14:45'),(14,'hello','$2y$10$dUFKbU0u7XD7F2KYoRrDa.jnhf62WKMz/bU/DO68xcfLme7NLvHsW','het','2019-02-22 16:01:40','2019-02-22 16:01:40'),(15,'ohoh','$2y$10$wl3W8KJY0WbhNNpsP4qAhuMmG9aI2Z2Zto91ndTyEUsQe9b6BqNGm','oj','2019-02-22 16:02:51','2019-02-22 16:02:51');
+INSERT INTO `users` VALUES (35,'toto','$2y$10$RjsOMfEV3Sw96LM/0eiEc.TaESYUos7Wa2Cj9sFpNrbIL04FlBD/6','titi','2019-02-25 23:30:33','2019-02-25 23:31:29'),(36,'lena','$2y$10$5dq7oEuE4urHhCmmS/7/iewIj2julbmI3AH44WoXIRZDsnBPdppGy','L-na','2019-02-25 23:32:59','2019-02-25 23:32:59');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -110,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-02-22 23:24:00
+-- Dump completed on 2019-02-26  0:54:00
