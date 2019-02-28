@@ -32,6 +32,14 @@ try {
             $is_okay = $chatroom->find($chatroom_info);
             echo json_encode($is_okay);
             break;
+        case 'participated_list':
+            header("Access-Control-Allow-Headers: *");
+            header('Access-Control-Allow-Origin: *');
+            header('Content-type: application/json; charset=UTF-8');
+            $chatroom_info = json_decode(file_get_contents('php://input'));
+            $is_okay = $chatroom->findParticipated($chatroom_info);
+            echo json_encode($is_okay);
+            break;
         /*case 'register':
             if ($chatroom->save($_POST)){
                 $_SESSION['errors'] = [];

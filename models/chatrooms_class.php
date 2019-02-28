@@ -56,6 +56,17 @@ class Chatroom
         return $chatrooms;
     }
 
+    public function findParticipated($data)
+    {
+        $dbh = Connection::get();
+        //$stmt = $dbh->query("select * from chatrooms where id_user = (SELECT id FROM users WHERE login = '".$_SESSION['login']."')");
+
+        $stmt = $dbh->query("select * from chatrooms where id in (select id_chatroom from messages WHERE messages.id_user = '".$data->id_user."');");
+        // recupere les users et fout le resultat dans une variable sous forme de tableau de tableaux
+        $chatrooms = $stmt->fetchAll(PDO::FETCH_CLASS);
+        return $chatrooms;
+    }
+
     public function validate($data)
     {
         $this->errors = [];
